@@ -1,5 +1,4 @@
 import 'package:countus/Screen/login.dart';
-import 'package:countus/Screen/profile.dart';
 import 'package:flutter/material.dart';
 
 void main() {
