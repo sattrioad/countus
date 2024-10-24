@@ -3,10 +3,10 @@
 import 'package:countus/Screen/about.dart';
 import 'package:countus/Screen/profile.dart';
 import 'package:countus/Screen/stopwatch.dart';
+import 'package:countus/model/sitesmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -57,8 +57,15 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool favorited = false;
 
   @override
   Widget build(BuildContext context) {
@@ -248,33 +255,54 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   height: 300,
                   child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 2,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: Column(
-                            children: [
-                              Image(
-                                image: AssetImage("assets/images/odd.png"),
-                                width: 200,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    // Filter situs yang memiliki favorited == true
+                    itemCount:
+                        sitesList.where((situs) => situs.favorited).length,
+                    itemBuilder: (context, index) {
+                      // Ambil situs yang sudah difavoritkan
+                      var favoriteSites =
+                          sitesList.where((situs) => situs.favorited).toList();
+                      Sites situs = favoriteSites[index];
+
+                      return Card(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 200,
+                              height: 150,
+                              child: Image(
+                                image: NetworkImage(situs.urlImage),
+                                fit: BoxFit.cover,
                               ),
-                              Text("asdasdasd"),
-                              Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(Icons.favorite)),
-                                  ElevatedButton(
-                                      onPressed: () {},
-                                      child: Text("asdasdasd"))
-                                ],
-                              )
-                            ],
-                          ),
-                        );
-                      }),
+                            ),
+                            Text(situs.judul),
+                            Row(
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        situs.favorited = !situs.favorited;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.favorite,
+                                      color: situs.favorited
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    )),
+                                ElevatedButton(
+                                    onPressed: () {}, child: Text("Read Now"))
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
+
                 SizedBox(
                   height: 30,
                 ),
@@ -292,16 +320,47 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.white,
                 ),
                 ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: 2,
+                    itemCount: sitesList.length,
                     itemBuilder: (context, index) {
+                      Sites situs = sitesList[index];
                       return Card(
                         child: Column(
                           children: [
-                            Image(
-                              image: AssetImage("assets/images/odd.png"),
-                              width: 250,
-                            )
+                            SizedBox(
+                              width: double.infinity,
+                              height: 200,
+                              child: Stack(children: [
+                                Image(
+                                  image: NetworkImage(situs.urlImage),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          situs.favorited = !situs.favorited;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        size: 32,
+                                        Icons.favorite,
+                                        color: situs.favorited
+                                            ? Colors.red
+                                            : Colors.grey,
+                                      )),
+                                )
+                              ]),
+                            ),
+                            Text(
+                              situs.judul,
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {}, child: Text('Read Now'))
                           ],
                         ),
                       );
