@@ -8,6 +8,8 @@ class AuthRepository extends GetxController {
   final _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
 
+  RxBool isLoading = false.obs;
+
   @override
   void onReady() {
     firebaseUser = Rx<User?>(_auth.currentUser);
@@ -23,25 +25,37 @@ class AuthRepository extends GetxController {
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     try {
+      isLoading.value = true;
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Get.offAll(const HomePage());
-    } catch (e) {
-      throw const Text("Error In Repository");
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Error', e.message.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black.withOpacity(0.5),
+          colorText: Colors.white);
+    } finally {
+      isLoading.value = false;
     }
   }
 
   Future<void> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
+      isLoading.value = true;
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       Get.offAll(const HomePage());
-    } catch (e) {
-      throw const Text("Error In Repository");
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Error', e.message.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black.withOpacity(0.5),
+          colorText: Colors.white);
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  Future<void> logout() async {
+  Future<void> signOut() async {
     await _auth.signOut();
   }
 }

@@ -1,11 +1,14 @@
-import 'package:countus/Screen/login/views/login.dart';
+import 'package:countus/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:get/instance_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AuthRepository authRepository = Get.find();
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -106,11 +109,7 @@ class AboutPage extends StatelessWidget {
                   backgroundColor: const Color.fromARGB(255, 149, 0, 0),
                 ),
                 onPressed: () {
-                  // Navigasi ke halaman login
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
+                  authRepository.signOut();
                 },
                 child: Text(
                   "Log out",
