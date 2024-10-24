@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "223169796281",
+    "project_id": "stopwatch-project-3b1f7",
+    "storage_bucket": "stopwatch-project-3b1f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223169796281:android:10ce61ea5ee1ab38d2e368",
+        "android_client_info": {
+          "package_name": "com.example.countus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMfPXc1BG5AdwaWrsnUrMOqL1wrH2Guds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

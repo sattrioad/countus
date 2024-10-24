@@ -1,4 +1,4 @@
-import 'package:countus/Screen/homepage.dart';
+import 'package:countus/Screen/login/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -109,6 +109,12 @@ class LoginScreen extends StatelessWidget {
                       () => TextFormField(
                         obscureText: loginController.isPasswordHidden.value,
                         controller: loginController.passwordController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Password tidak boleh kosong";
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           labelText: 'Password',
                           labelStyle: const TextStyle(color: Color(0XFF8A8888)),
@@ -122,7 +128,7 @@ class LoginScreen extends StatelessWidget {
                               loginController.isPasswordHidden.value
                                   ? Icons.visibility_off
                                   : Icons.visibility,
-                              color: Color(0XFF011F6B),
+                              color: const Color(0XFF011F6B),
                             ),
                             onPressed: loginController.togglePasswordVisibility,
                           ),
@@ -155,13 +161,9 @@ class LoginScreen extends StatelessWidget {
                           // Validasi form sebelum login
                           if (loginController.formKey.currentState!
                               .validate()) {
-                            loginController.signIn(
-                                loginController.emailController.text,
-                                loginController.passwordController.text);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomePage()));
+                            loginController.signInWithEmailAndPassword(
+                                loginController.emailController.text.trim(),
+                                loginController.emailController.text.trim());
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -216,64 +218,5 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class LoginController extends GetxController {
-  // Key untuk Form
-  final formKey = GlobalKey<FormState>();
-
-  // TextEditingController untuk email dan password
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  // Untuk toggle visibility password
-  RxBool isPasswordHidden = true.obs;
-
-  // Fungsi toggle untuk menyembunyikan atau menampilkan password
-  void togglePasswordVisibility() {
-    isPasswordHidden.value = !isPasswordHidden.value;
-  }
-
-  // Fungsi untuk proses login (misalnya, menggunakan Firebase Authentication)
-  void signIn(String email, String password) async {
-    try {
-      if (email.isNotEmpty && password.isNotEmpty) {
-        // Cek apakah email memuat '@'
-        if (!email.contains('@')) {
-          Get.snackbar(
-            'Error',
-            'Email harus memuat @',
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        } else {
-          // Misalnya, jika menggunakan Firebase:
-          // UserCredential userCredential = await FirebaseAuth.instance
-          //     .signInWithEmailAndPassword(email: email, password: password);
-
-          print("Login berhasil");
-        }
-      } else {
-        Get.snackbar(
-          'Error',
-          'Email dan password tidak boleh kosong',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
-  @override
-  void onClose() {
-    // Bersihkan controller saat tidak lagi digunakan
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
   }
 }

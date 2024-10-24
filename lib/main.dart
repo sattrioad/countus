@@ -1,8 +1,16 @@
-import 'package:countus/Screen/login.dart';
-import 'package:countus/Screen/profile.dart';
+import 'package:countus/Screen/login/views/login.dart';
+import 'package:countus/firebase_options.dart';
+import 'package:countus/repository/auth_repository.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-void main() {
+Future<void> main() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
+      .then(
+    (value) => Get.put(AuthRepository()),
+  );
+  WidgetsFlutterBinding();
   runApp(const MainApp());
 }
 
@@ -11,6 +19,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: LoginScreen());
+    return const GetMaterialApp(home: LoginScreen());
   }
 }
