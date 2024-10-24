@@ -23,6 +23,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.lazyPut(() => SignupControllers(), fenix: true);
     Get.lazyPut(() => LoginController(), fenix: true);
-    return const GetMaterialApp(home: LoginScreen());
+    return const GetMaterialApp(
+      home: LoginScreen(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }

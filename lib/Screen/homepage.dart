@@ -4,9 +4,12 @@ import 'package:countus/Screen/about.dart';
 import 'package:countus/Screen/profile.dart';
 import 'package:countus/Screen/stopwatch.dart';
 import 'package:countus/model/sitesmodel.dart';
+import 'package:countus/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:get/instance_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -69,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthRepository authRepository = Get.find();
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,
@@ -109,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: Text(
-                          "Hi, Mr Lionel", //nanti namanya ini disesuain sama usernamenya pas daftar atau klo gabisa apus aja gapapa io, jadi dia yang kek lempar parameter gituu io kek praktikum kemaren
+                          "Hi, ${authRepository.currentUser.email}", //nanti namanya ini disesuain sama usernamenya pas daftar atau klo gabisa apus aja gapapa io, jadi dia yang kek lempar parameter gituu io kek praktikum kemaren
                           style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 18,
@@ -293,7 +297,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                           : Colors.grey,
                                     )),
                                 ElevatedButton(
-                                    onPressed: () {}, child: Text("Read Now"))
+                                    onPressed: () async {
+                                      Uri uri = Uri.parse(situs.link);
+                                      if (await canLaunchUrl(uri)) {
+                                        await launchUrl(uri,
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      } else {
+                                        throw "Could't launch $uri!";
+                                      }
+                                    },
+                                    child: Text("Read Now"))
                               ],
                             )
                           ],
@@ -360,7 +374,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(fontSize: 24),
                             ),
                             ElevatedButton(
-                                onPressed: () {}, child: Text('Read Now'))
+                                onPressed: () async {
+                                  Uri uri = Uri.parse(situs.link);
+                                  if (await canLaunchUrl(uri)) {
+                                    await launchUrl(uri,
+                                        mode: LaunchMode.externalApplication);
+                                  } else {
+                                    throw "Could't launch $uri!";
+                                  }
+                                },
+                                child: Text('Read Now'))
                           ],
                         ),
                       );
